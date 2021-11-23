@@ -1,5 +1,3 @@
-
-
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -14,20 +12,22 @@ import com.qualcomm.robotcore.util.Range;
  * The code is structured as a LinearOpMode
  */
 
-@TeleOp(name="Knightbot Movement", group="Knightbot")
+@TeleOp(name="Knightbot Movement", group="T_Knightbot")
 //@Disabled
 public class KnightbotTeleop2 extends LinearOpMode {
 
     HardwareKnightbot robot = new HardwareKnightbot();   // Use Knightbot's hardware
 
     @Override
+    //This function initializes all of the variables. We use doubles to be more exact than integars
     public void runOpMode() {
         double FL;
         double FR;
         double BL;
         double BR;
         double carousel;
-        
+        double leftClawPosition = 0.2;
+        double rightClawPosition = 0.8;
         int    clawReverse = 0;
 
         robot.init(hardwareMap);
@@ -36,10 +36,10 @@ public class KnightbotTeleop2 extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-
+        // op mode means controlled by a player
         while (opModeIsActive()) {
 
-            // set drive power levels to power variables (very nice thomas)
+            // set drive power levels to power variables 
             FL = gamepad1.left_stick_y-gamepad1.left_stick_x;
             FR = gamepad1.right_stick_y+gamepad1.left_stick_x;
             BL = gamepad1.left_stick_y+gamepad1.left_stick_x;
@@ -64,48 +64,67 @@ public class KnightbotTeleop2 extends LinearOpMode {
             //((DcMotorEx) FL).setVelocity(10);
             //((DcMotorEx) FR).setVelocity(10);
             //((DcMotorEx) frontLeft).setVelocityPIDFCoefficients(2.926,0.2926,0,29.26);
-
+            
+            //arm
+            //we divide by 2 so x is not included
             robot.arm.setPower(gamepad2.left_stick_y/2);
-
-            //when y is pressed on gamepad 2, the claw defults to closed after pressing x
+            
+            //claws
+            clawReverse = Range.clip(clawReverse, 0, 1);
+            //we limit these positions to prevent the robot arms to get so far back it takes a long time for the variables to get set to a position where the arm is once open again
+            leftClawPosition = Range.clip(leftClawPosition, 0.1, 0.52);
+            rightClawPosition = Range.clip(rightClawPosition, 0.48, 1);
+            
+            //By pressing Y, you add a number to clawReverse which makes it default closed.
+            //Once you press Y it won't change back so be careful!
             if(gamepad2.y){
                 clawReverse++;
             }
-
-            clawReverse = Range.clip(clawReverse, 0, 1);
             
-            if(gamepad2.a == true){
-                robot.carousel.setPower(1);
-            }
-            
+            //holding it will keep it going on and on
             if(clawReverse>=1) {
-                if (gamepad2.x) {
-                    robot.leftClaw.setPosition(0.8);
-                    robot.rightClaw.setPosition(0);
-                } 
-                else {
-                    robot.leftClaw.setPosition(.4);
-                    robot.rightClaw.setPosition(.45);
+                if (gamepad2.x){ //opens the claw in increments
+                leftClawPosition = leftClawPosition + 0.1;
+                rightClawPosition = rightClawPosition - 0.1;
                 }
+                else if(gamepad2.y){            //closes the claw in increments
+                leftClawPosition = leftClawPosition - 0.1;
+                rightClawPosition = rightClawPosition + 0.1;
+                }
+                
+                robot.leftClaw.setPosition(leftClawPosition);
+                robot.rightClaw.setPosition(rightClawPosition);
             }
                 
-                //move at a slow pace when left bumper is pressed on gamepad 1
-                if (gamepad1.left_bumper) {
-                    robot.FL_POWER = .2;
-                    robot.FR_POWER = .2;
-                    robot.BL_POWER = .2;
-                    robot.BR_POWER = .2;
+            //carousel
+            if(gamepad2.b == true){                 //counter-clockwise or Red
+                robot.carousel.setPower(-1);
+            }
+            else if (gamepad2.a == true){              //clockwise or Blue
+                robot.carousel.setPower(1);
+            }
+            else{
+                robot.carousel.setPower(0); 
+            }
+                
+            //move at a slow pace when left bumper is pressed on gamepad 1
+            if (gamepad1.left_bumper) {
+                robot.FL_POWER = .2;
+                robot.FR_POWER = .2;
+                robot.BL_POWER = .2;
+                robot.BR_POWER = .2;
+            }
+
+            if (!gamepad1.left_bumper) {
+                robot.FL_POWER = 1;
+                robot.FR_POWER = 1;
+                robot.BL_POWER = 1;
+                robot.BR_POWER = 1;
                 }
 
-                if (!gamepad1.left_bumper) {
-                    robot.FL_POWER = 1;
-                    robot.FR_POWER = 1;
-                    robot.BL_POWER = 1;
-                    robot.BR_POWER = 1;
-                }
-
-
+            //elevator
             robot.liftL.setPower(gamepad2.right_stick_y);
+            //Since the motors are not the same in speed, we multiplied the right one by 0.8 to make them a lot more even
             robot.liftR.setPower(gamepad2.right_stick_y*.8);
 
             sleep(50);

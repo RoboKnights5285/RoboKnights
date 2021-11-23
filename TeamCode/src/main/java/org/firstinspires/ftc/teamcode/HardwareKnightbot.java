@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
+//This document just intiializes hardware. Not much programming stuff in here.
 public class HardwareKnightbot{
 
     public double FL_POWER = 0;
@@ -48,10 +48,10 @@ public class HardwareKnightbot{
         liftR      = hwMap.get(DcMotorEx.class, "liftR");
         carousel   = hwMap.get(DcMotorEx.class, "carousel");
         
-        frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        backLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         arm.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         liftL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         liftR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -74,16 +74,16 @@ public class HardwareKnightbot{
         liftL.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         liftR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         carousel.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-//
+
         frontLeft.setDirection(DcMotorEx.Direction.FORWARD);
-        backLeft.setDirection(DcMotorEx.Direction.REVERSE);
+        backLeft.setDirection(DcMotorEx.Direction.FORWARD);
         frontRight.setDirection(DcMotorEx.Direction.REVERSE);
-        backRight.setDirection(DcMotorEx.Direction.FORWARD);
-        arm.setDirection(DcMotorEx.Direction.FORWARD);
+        backRight.setDirection(DcMotorEx.Direction.REVERSE);
+        arm.setDirection(DcMotorEx.Direction.REVERSE);
         liftL.setDirection(DcMotorEx.Direction.FORWARD);
         liftR.setDirection(DcMotorEx.Direction.REVERSE); 
-        carousel.setDirection(DcMotorEx.Direction.FORWARD); 
-        
+        carousel.setDirection(DcMotorEx.Direction.FORWARD);//red
+      
         leftClaw  = hwMap.get(Servo.class, "leftClaw");
         rightClaw = hwMap.get(Servo.class, "rightClaw");
         rightClaw.setPosition(0.8);
