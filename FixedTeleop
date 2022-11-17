@@ -1,0 +1,54 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+
+public class TeleOp extends LinearOpMode {
+    private DcMotor BL;
+    private DcMotor BR;
+    private DcMotor FL;
+    private DcMotor FR;
+    private DcMotor arm;
+    private Servo claw;
+    
+    @Override
+    
+    public void runOpMode(){
+        BL = hardwareMap.get(DcMotor.class, "backLeftWheel");
+        BR = hardwareMap.get(DcMotor.class, "backRightWheel");
+        FL = hardwareMap.get(DcMotor.class, "frontLeftWheel");
+        FR = hardwareMap.get(DcMotor.class, "frontRightWheel");
+        
+        telemetry.addData("Status", "Running");
+        telemetry.update();
+        
+        while(opModeIsActive()){
+            double BLPower = 0;
+            double BRPower = 0;
+            double FLPower = 0;
+            double FRPower = 0;
+            
+            BLPower = gamepad1.left_stick_y;
+            FLPower = gamepad1.left_stick_y;
+            BRPower = gamepad1.right_stick_y;
+            FRPower = gamepad1.right_stick_y;
+            
+            BL.setPower(BLPower);
+            BR.setPower(BRPower);
+            FR.setPower(FRPower);
+            FL.setPower(FLPower);
+            
+            telemetry.addData("BL Motor Power", BLPower);
+            telemetry.addData("BR Motor Power", BRPower);
+            telemetry.addData("FL Motor Power", FLPower);
+            telemetry.addData("FR Motor Power", FRPower);
+            telemetry.update();
+            
+        }
+    }
+    
+    
+    
+}
